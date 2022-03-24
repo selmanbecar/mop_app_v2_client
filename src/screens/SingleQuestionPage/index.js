@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react"
 import jwt_decode from "jwt-decode";
 import {useNavigate} from "react-router-dom";
-
+import "./index.css"
 import QuestionService from "../../Services/QuestionService";
 import {useLocation} from "react-router";
 import CommentService from "../../Services/CommentService";
@@ -14,6 +14,8 @@ const SingleQuestionPage = (props) => {
     const [likes, setLikes] = useState([]);
     const [dislike, setDislike] = useState([]);
     const [error, setError] = useState("");
+    const [editComment, setEditComment] = useState(true);
+    const [editCommentData, setEditCommentData] = useState("")
 
 
     const token = localStorage.getItem('token');
@@ -22,6 +24,10 @@ const SingleQuestionPage = (props) => {
     const location = useLocation();
     const id = location.pathname.split("/")[2]
 
+
+    const handleEditCommentChange = (event) => {
+        setEditCommentData(event.target.value);
+    };
 
     const fetchComments = async () => {
         let commentData = await CommentService.getComments(id)
@@ -130,7 +136,37 @@ const SingleQuestionPage = (props) => {
             setError("Please login!")
         }
 
+    }
 
+    const deleteComment = async (commentId) => {
+        if (decoded) {
+
+            try {
+                await CommentService.deleteComment(commentId)
+                await fetchComments()
+            } catch (error) {
+                console.log(error)
+            }
+        } else {
+            setError("Please login!")
+        }
+    }
+    const editCommentFunc = async (commentId) => {
+        if (decoded) {
+
+            try {
+                const data = {
+                    comment: editCommentData
+                }
+                await CommentService.editComment(commentId, data)
+                await fetchComments()
+                setEditComment(!editComment)
+            } catch (error) {
+                console.log(error)
+            }
+        } else {
+            setError("Please login!")
+        }
     }
 
     // Get user information
@@ -166,32 +202,78 @@ const SingleQuestionPage = (props) => {
                         onClick={addQuestionDislike}>Dislikes: {dislike.like}</button>
 
             </div>
-            <p style={{color: "red"}}>{error}</p>
-            <h5>Comment:</h5>
-            {decoded ? <AddComment fetchComments={fetchComments}/> :
-                <a href="/login">Please login if you want to leave comment!</a>}
+            <div className="comments">
+                <p style={{color: "red"}}>{error}</p>
+                <h5>Comment:</h5>
+                {decoded ? <AddComment fetchComments={fetchComments}/> :
+                    <a href="/login">Please login if you want to leave comment!</a>}
 
-            <div className="comment">
-                {comment && comment.map((item) => {
+                <div className="comment">
+                    {comment && comment.map((item) => {
 
-                    return (
-                        <div>
-                            <h6>{item.comment}</h6>
-                            <button className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
-                                    onClick={async () => {
-                                        await addCommentLike(item.id)
-                                    }}>Likes: {item.likes}</button>
-                            <button className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
-                                    onClick={async () => {
-                                        await addCommentDislike(item.id)
-                                    }}>Dislikes: {item.dislikes}</button>
+                        return (
+                            <div>
 
-                        </div>
-                    )
-                })}
+                                {editComment ? <h6>{item.comment}</h6> :
+                                    <div>
+                                        <p>Comment:</p>
+                                        <input
+                                            className="mdl-textfield__input"
+                                            type="text"
+                                            id="comment"
+                                            name="comment"
+                                            onChange={handleEditCommentChange}
+
+                                        />
+
+                                        <button
+                                            onClick={async () => {
+                                                await editCommentFunc(item.id)
+                                            }}
+                                            className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
+                                        ><span className="material-icons">
+                                        save
+                                    </span>
+                                        </button>
+                                    </div>}
+
+                                {item.userId === decoded.user.id ?
+                                    <div>
+                                        <button
+                                            onClick={async () => {
+                                                await deleteComment(item.id)
+                                            }}
+                                            className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
+                                        ><span className="material-icons">
+                                        delete
+                                    </span>
+                                        </button>
+                                        <button
+                                            onClick={async () => {
+                                                await setEditComment(!editComment)
+                                            }}
+
+                                            className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
+                                        ><span className="material-icons">
+                                        edit
+                                    </span>
+                                        </button>
+                                    </div> : <p></p>}
+                                <button className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+                                        onClick={async () => {
+                                            await addCommentLike(item.id)
+                                        }}>Likes: {item.likes}</button>
+                                <button className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+                                        onClick={async () => {
+                                            await addCommentDislike(item.id)
+                                        }}>Dislikes: {item.dislikes}</button>
+
+                            </div>
+                        )
+                    })}
+                </div>
+
             </div>
-
-
         </>
     )
 }

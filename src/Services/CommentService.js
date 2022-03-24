@@ -39,12 +39,13 @@ class CommentService {
             });
     }
 
-    static async deleteHealth(id) {
-        return fetch(`${this.BACKEND_URL}/api/health/${id}`, {
+    static async deleteComment(id) {
+        return fetch(`${this.BACKEND_URL}/api/comments/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
+                "x-auth-token": localStorage.getItem("token")
             }
         })
             .then((res) => {
@@ -52,7 +53,7 @@ class CommentService {
                     return res.json();
                 }
 
-                throw new Error("Error deleting health data!");
+                throw new Error("Error deleting comment data!");
             })
             .then((res) => {
                 return res
@@ -65,7 +66,7 @@ class CommentService {
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
-                "x-auth-token":localStorage.getItem("token")
+                "x-auth-token": localStorage.getItem("token")
             },
             body: JSON.stringify(data),
         })
@@ -81,12 +82,13 @@ class CommentService {
             });
     }
 
-    static async editHealth(id, data) {
-        const res = await fetch(`${this.BACKEND_URL}/api/health/${id}`, {
+    static async editComment(id, data) {
+        const res = await fetch(`${this.BACKEND_URL}/api/comments/${id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
+                "x-auth-token": localStorage.getItem("token")
             },
             body: JSON.stringify(data),
         });
