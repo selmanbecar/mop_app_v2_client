@@ -1,8 +1,8 @@
 class QuestionService {
     static BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-    static async getAllQuestion(offset) {
-        return fetch(`${this.BACKEND_URL}/api/questions/?offset=${offset}`, {
+    static async getAllQuestions(limit) {
+        return fetch(`${this.BACKEND_URL}/api/questions/?limit=${limit}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -18,6 +18,26 @@ class QuestionService {
             .then((res) => {
                 return res
             });
+    }
+
+    static async getAllQuestionsByUser(limit) {
+        return fetch(`${this.BACKEND_URL}/api/questions/user/?limit=${limit}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "x-auth-token": localStorage.getItem("token")
+            }
+        })
+            .then((res) => {
+                if (res.ok) {
+                    return res.json();
+                }
+                throw new Error("Error fetching question data!");
+            })
+            .then((res) => {
+                return res
+            })
     }
 
     static async getSingleQuestion(id) {
@@ -65,7 +85,7 @@ class QuestionService {
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
-                "x-auth-token":localStorage.getItem("token")
+                "x-auth-token": localStorage.getItem("token")
             },
             body: JSON.stringify(data),
         })

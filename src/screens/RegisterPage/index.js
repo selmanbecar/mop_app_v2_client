@@ -8,10 +8,20 @@ export const Form = () => {
     let navigate = useNavigate()
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    const [first_name, setFirstName] = useState('');
+    const [last_name, setLastName] = useState('');
     const [confirmedPassword, setConfirmedPassword] = useState('');
     const [error, setError] = useState({});
 
+
+    //handle changes
+    const handleFirstNameChange = (event) => {
+        setFirstName(event.target.value);
+    };
+
+    const handleLastNameChange = (event) => {
+        setLastName(event.target.value);
+    };
 
     const handleEmailChange = (event) => {
         if (!Validator.emailValidate(event.target.value)) {
@@ -32,7 +42,7 @@ export const Form = () => {
         if (!Validator.passwordValidate(event.target.value)) {
             setError({
                 ...error,
-                password: 'Password must be between 6 and 50 characters!',
+                password: 'Password must be between 5 and 50 characters!',
             });
         } else {
             setError({
@@ -68,6 +78,8 @@ export const Form = () => {
         event.preventDefault();
 
         let body = {
+            first_name,
+            last_name,
             email,
             password,
         };
@@ -93,6 +105,30 @@ export const Form = () => {
         <form>
             <div>
                 <div/>
+                <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <p>First name: </p>
+                    <input
+                        className="mdl-textfield__input"
+                        type="text"
+                        id="first_name"
+                        name="first_name"
+                        value={first_name}
+                        onChange={handleFirstNameChange}
+                        autoComplete="first_name"
+                    />
+                </div>
+                <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <p>Last name: </p>
+                    <input
+                        className="mdl-textfield__input"
+                        type="text"
+                        id="last_name"
+                        name="last_name"
+                        value={last_name}
+                        onChange={handleLastNameChange}
+                        autoComplete="last_name"
+                    />
+                </div>
                 <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <p>Email: </p>
                     <input
@@ -154,9 +190,9 @@ export const Form = () => {
                 >
                     REGISTER
                 </button>
-                <p style={{color:"red"}}>{error.email}</p>
-                <p style={{color:"red"}}>{error.password}</p>
-                <p style={{color:"red"}}>{error.confirmedPassword}</p>
+                <p style={{color: "red"}}>{error.email}</p>
+                <p style={{color: "red"}}>{error.password}</p>
+                <p style={{color: "red"}}>{error.confirmedPassword}</p>
 
             </div>
 

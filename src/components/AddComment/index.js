@@ -4,7 +4,7 @@ import {useLocation} from "react-router";
 import CommentService from "../../Services/CommentService";
 import {useNavigate} from "react-router-dom";
 
-const AddComment = ({fetchComment}) => {
+const AddComment = ({fetchComments}) => {
 
     let navigate = useNavigate()
     //states
@@ -25,12 +25,7 @@ const AddComment = ({fetchComment}) => {
     if (token) decoded = jwt_decode(token);
 
     useEffect(() => {
-        (async () => {
-            if(!decoded){
-                navigate("/login", {replace: true});
-
-            }
-        })();
+        
     },);
 
 
@@ -44,12 +39,12 @@ const AddComment = ({fetchComment}) => {
             questionId
         }
 
-        if(comment !== ""){
+        if (comment !== "") {
             await CommentService.addComment(data);
-            fetchComment()
+            fetchComments()
             setComment("")
             setError("")
-        }else{
+        } else {
             setError("Please enter your comment!")
         }
 
@@ -84,7 +79,7 @@ const AddComment = ({fetchComment}) => {
                     </button>
                 </div>
             </form>
-            <p style={{color:"red"}}>{error}</p>
+            <p style={{color: "red"}}>{error}</p>
         </div>
     )
 }

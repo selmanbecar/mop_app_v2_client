@@ -19,39 +19,29 @@ class UserService {
             })
             .then((res) => {
                 return res
-            });
+            }).catch((err) => console.error(err));
     }
 
 
-    static async login(data) {
-        return fetch(`${this.BACKEND_URL}/api/login`, {
-            method: "POST",
+    static async editUser(id, data) {
+        const res = await fetch(`${this.BACKEND_URL}/api/users/${id}`, {
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
+                "x-auth-token": localStorage.getItem("token")
             },
             body: JSON.stringify(data),
+        }).then((res) => {
+            if (res.ok) {
+                return res.json();
+            }
+            throw new Error("Error editing user!");
         })
             .then((res) => {
-                if (res.status === 404) {
-                    NotificationManager.error(
-                        "Email or password is not valid!",
-                        "",
-                        2000
-                    );
-                }
-                if (res.ok) {
-                    return res.json();
-                }
-                throw new Error("Error signing in!");
-            })
-            .then((res) => {
-                localStorage.setItem("token", res.token);
-                return res;
-            });
+                return res
+            }).catch((err) => console.error(err));
     }
-
-
 }
 
 export default UserService;

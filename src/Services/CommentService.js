@@ -1,7 +1,7 @@
 class CommentService {
     static BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-    static async getTopUser() {
+    static async getTopUsers() {
         return fetch(`${this.BACKEND_URL}/api/comments/users`, {
             method: "GET",
             headers: {

@@ -3,58 +3,51 @@ import {useNavigate} from "react-router-dom";
 import QuestionService from "../../Services/QuestionService";
 import "./index.css";
 
-const QuestionList = ({fetchQuestion, question}) => {
+const QuestionList = ({fetchQuestions, questions}) => {
     let navigate = useNavigate()
-    const [offset, setOffset] = useState(0);
-
+    const [limit, setLimit] = useState(20);
 
 
     useEffect(() => {
         (async () => {
+            try {
+                fetchQuestions(limit)
+            } catch (e) {
+                console.error(e)
+            }
 
-           fetchQuestion(offset)
 
         })();
-        console.log(question)
-    },[offset]);
+    }, [limit]);
 
 
     return (
 
 
-            <div className="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
-                <div className="mdl-layout__drawer">
-                    <span className="mdl-layout-title">Last questions:</span>
-                    {question && question.map((item) => {
-                        return (
-                            <ul className='mdl-list'>
-                                <li className="mdl-list__item">
-                                    <a href={`/question/${item.id}`} className="mdl-list__item-primary-content">
-                                        {item.title && item.title}
-                                    </a>
-                                </li>
-                            </ul>
+        <div className="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
+            <div className="mdl-layout__drawer">
+                <span className="mdl-layout-title">Last questions:</span>
+                {questions && questions.map((item) => {
+                    return (
+                        <ul className='mdl-list'>
+                            <li className="mdl-list__item">
+                                <a href={`/question/${item.id}`} className="mdl-list__item-primary-content">
+                                    {item.title && item.title}
+                                </a>
+                            </li>
+                        </ul>
 
-                        )
-                    })}
-                </div>
-                <main className="mdl-layout__content">
-                    {offset === 0 ? <p></p> : <button className="mdl-button mdl-js-button mdl-button--accent"
-                                                      onClick={() => {
-                                                          setOffset(offset - 20)
-                                                      }}>Previus Page</button>}
-                    <button className="mdl-button mdl-js-button mdl-button--primary" onClick={() => {
-                        setOffset(offset + 20)
-                    }}>Next Page</button>
-                </main>
-
+                    )
+                })}
             </div>
+            <main className="mdl-layout__content">
+                <button className="mdl-button mdl-js-button mdl-button--primary" onClick={() => {
+                    setLimit(limit + 20)
+                }}>Load more
+                </button>
+            </main>
 
-
-
-
-
-
+        </div>
 
 
     )

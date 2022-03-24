@@ -11,27 +11,31 @@ import QuestionService from "../../Services/QuestionService";
 const HomePage = () => {
     let navigate = useNavigate()
     const [user, setUser] = useState({});
-    const [question, setQuestion] = useState([]);
+    const [questions, setQuestions] = useState([]);
 
 
     const token = localStorage.getItem('token');
     let decoded;
-    if (token) decoded = jwt_decode(token);
+    try {
+        if (token) decoded = jwt_decode(token);
+    } catch (e) {
+        console.error(e)
+    }
 
-    const fetchQuestion =  async (offset) => {
-        const questionData = await QuestionService.getAllQuestion(offset)
-        setQuestion(questionData)
+    const fetchQuestions = async (limit) => {
+        const questionData = await QuestionService.getAllQuestions(limit)
+        setQuestions(questionData)
     }
 
 
     // Get user information
     useEffect(() => {
         (async () => {
-            if(decoded){
-                const userData = await UserService.getSingleUser(decoded.user.id)
+            if (decoded) {
+                const userData = await UserService.getSingleUser(decoded?.user.id)
                 setUser(userData)
-            }else{
-                setUser({email:"Unknown"})
+            } else {
+                setUser({email: "Unknown"})
             }
         })();
     }, []);
@@ -40,36 +44,45 @@ const HomePage = () => {
         <>
             <div>
 
-            <div className="home-nav">
-                <h3>QUESTIONNAIRE</h3>
-                {decoded ?
-                    <div>
-                        <button className="mdl-button mdl-js-button mdl-button--primary" style={{height: "50px"}} onClick={() => {
-                            localStorage.removeItem("token")
+                <div className="home-nav">
+                    <h3>QUESTIONNAIRE</h3>
+                    {decoded ?
+                        <div>
+                            <button className="mdl-button mdl-js-button mdl-button--primary" style={{height: "50px"}}
+                                    onClick={() => {
+                                        localStorage.removeItem("token")
+                                        navigate("/login", {replace: true});
+
+                                    }}>Logout
+                            </button>
+                            <button className="mdl-button mdl-js-button mdl-button--primary" style={{height: "50px"}}
+                                    onClick={() => {
+
+                                        navigate("/question/add", {replace: true});
+
+                                    }}>Add question
+                            </button>
+                            <button className="mdl-button mdl-js-button mdl-button--primary" style={{height: "50px"}}
+                                    onClick={() => {
+
+                                        navigate("/myquestion", {replace: true});
+
+                                    }}>My questions
+                            </button>
+                        </div>
+                        :
+                        <button className="mdl-button mdl-js-button mdl-button--primary" onClick={() => {
                             navigate("/login", {replace: true});
-
-                        }}>Logout
-                        </button>
-                        <button className="mdl-button mdl-js-button mdl-button--primary" style={{height: "50px"}} onClick={() => {
-
-                            navigate("/question/add", {replace: true});
-
-                        }}>Add question
-                        </button>
-                    </div>
-                    :
-                    <button className="mdl-button mdl-js-button mdl-button--primary"  onClick={() => {
-                        navigate("/login", {replace: true});
-                    }}>Login
-                    </button> }
-                <h6 className="welcome-user">Welcome: {user.email}</h6>
-            </div>
+                        }}>Login
+                        </button>}
+                    <a href={`/myprofile/${user.id}`} className="welcome-user">Welcome: {user.email}</a>
+                </div>
 
 
                 <div className="comp-wrapper">
                     <TopQuestion/>
                     <TopUsers/>
-                    <QuestionList  fetchQuestion={fetchQuestion} question={question}/>
+                    <QuestionList fetchQuestions={fetchQuestions} questions={questions}/>
 
 
                 </div>

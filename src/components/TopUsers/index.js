@@ -8,7 +8,7 @@ const TopQuestion = () => {
 
     useEffect(() => {
         (async () => {
-            let topUsers = await CommentService.getTopUser()
+            let topUsers = await CommentService.getTopUsers()
             topUsers = topUsers.slice(0, 5)
             setTopUsers(topUsers)
 
