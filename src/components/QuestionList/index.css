@@ -1,0 +1,18 @@
+.mdl-layout__drawer{
+    width: 400px;
+    height: 500px;
+}
+.mdl-layout--fixed-drawer>.mdl-layout__content {
+    margin-top: 500px;
+    margin-left: 50px;
+}
+.mdl-layout{
+    width: 100%;
+}
+
+.mdl-layout__container{
+    width: 40%;
+}
+a{
+    color: black;
+}
