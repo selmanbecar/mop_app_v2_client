@@ -58,7 +58,6 @@ class LikeService {
             });
     }
 
-
     static async getNumberOfLikesForComment(id) {
         return fetch(`${this.BACKEND_URL}/api/likes/comment/${id}`, {
             method: "GET",
@@ -97,7 +96,6 @@ class LikeService {
             });
     }
 
-
     static async addLike(data) {
         return fetch(`${this.BACKEND_URL}/api/likes`, {
             method: "POST",
@@ -120,8 +118,6 @@ class LikeService {
                 return res;
             });
     }
-
-
 }
 
 export default LikeService;

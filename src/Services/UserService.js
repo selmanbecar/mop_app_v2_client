@@ -1,5 +1,3 @@
-import {NotificationManager} from "react-notifications";
-
 class UserService {
     static BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -21,7 +19,6 @@ class UserService {
                 return res
             }).catch((err) => console.error(err));
     }
-
 
     static async editUser(id, data) {
         const res = await fetch(`${this.BACKEND_URL}/api/users/${id}`, {

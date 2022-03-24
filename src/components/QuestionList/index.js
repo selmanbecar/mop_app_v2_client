@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from "react"
-import {useNavigate} from "react-router-dom";
-import QuestionService from "../../Services/QuestionService";
+
 import "./index.css";
 
 const QuestionList = ({fetchQuestions, questions}) => {
-    let navigate = useNavigate()
-    const [limit, setLimit] = useState(20);
 
+    // states
+    const [limit, setLimit] = useState(20);
 
     useEffect(() => {
         (async () => {
@@ -15,15 +14,10 @@ const QuestionList = ({fetchQuestions, questions}) => {
             } catch (e) {
                 console.error(e)
             }
-
-
         })();
     }, [limit]);
 
-
     return (
-
-
         <div className="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
             <div className="mdl-layout__drawer">
                 <span className="mdl-layout-title">Last questions:</span>
@@ -36,17 +30,16 @@ const QuestionList = ({fetchQuestions, questions}) => {
                                 </a>
                             </li>
                         </ul>
-
                     )
                 })}
             </div>
             <main className="mdl-layout__content">
+                {/* Load more questions button */}
                 <button className="mdl-button mdl-js-button mdl-button--primary" onClick={() => {
                     setLimit(limit + 20)
                 }}>Load more
                 </button>
             </main>
-
         </div>
 
 

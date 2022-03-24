@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from "react"
-import {useNavigate} from "react-router-dom";
+
 import LikeService from "../../Services/LikeService";
 import QuestionService from "../../Services/QuestionService";
 
 const TopQuestion = () => {
-    let navigate = useNavigate()
-    const [topQuestions, setTopQuestions] = useState([]);
 
+    // states
+    const [topQuestions, setTopQuestions] = useState([]);
 
     useEffect(() => {
         (async () => {
+            //get top question data and foreach record get question title
             let topQuestionsData = await LikeService.getTopQuestions()
             topQuestionsData = topQuestionsData.slice(0, 5).reverse()
             topQuestionsData = await Promise.all(topQuestionsData.map(async (item) => {
@@ -17,17 +18,16 @@ const TopQuestion = () => {
                 return {title: question.title, number: item.number}
             }))
             setTopQuestions(topQuestionsData)
-
         })();
     }, []);
 
 
     return (
         <div className="comp-wrapper-element">
+            {/* Get top questions*/}
             <h5>Top 5 Questions: </h5>
 
             {topQuestions && topQuestions.map((item) => {
-
                 return (
                     <ul>
                         <li className="mdl-list__item">
@@ -39,7 +39,6 @@ const TopQuestion = () => {
 
                 )
             })}
-
 
         </div>
     )

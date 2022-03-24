@@ -7,8 +7,6 @@ const emailValidate = (email) => {
 const passwordValidate = (password) =>
     password.length >= 5 && password.length <= 50;
 
-
-
 const max50CharsValidate = (input) => input.length <= 50;
 
 const max255CharsValidate = (input) => input.length <= 255;
@@ -25,4 +23,5 @@ const Validator = {
     max100CharsValidate,
     required,
 };
+
 export default Validator;

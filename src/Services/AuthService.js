@@ -1,10 +1,7 @@
-import {NotificationManager} from "react-notifications";
-
 class AuthService {
     static BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
     static async register(data) {
-
         return fetch(`${this.BACKEND_URL}/api/register`, {
             method: "POST",
             headers: {
@@ -35,11 +32,7 @@ class AuthService {
         })
             .then((res) => {
                 if (res.status === 404) {
-                    NotificationManager.error(
-                        "Email or password is not valid!",
-                        "",
-                        2000
-                    );
+                    console.error("Email or password are incorrect!")
                 }
                 if (res.ok) {
                     return res.json();

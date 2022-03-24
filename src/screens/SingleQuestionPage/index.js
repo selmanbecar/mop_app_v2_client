@@ -1,14 +1,17 @@
 import React, {useEffect, useState} from "react"
-import jwt_decode from "jwt-decode";
-import {useNavigate} from "react-router-dom";
-import "./index.css"
-import QuestionService from "../../Services/QuestionService";
 import {useLocation} from "react-router";
-import CommentService from "../../Services/CommentService";
-import AddComment from "../../components/AddComment";
-import LikeService from "../../Services/LikeService";
+import jwt_decode from "jwt-decode";
 
-const SingleQuestionPage = (props) => {
+import AddComment from "../../components/AddComment";
+import QuestionService from "../../Services/QuestionService";
+import CommentService from "../../Services/CommentService";
+import LikeService from "../../Services/LikeService";
+import "./index.css"
+
+
+const SingleQuestionPage = () => {
+
+    // States
     const [question, setQuestion] = useState({});
     const [comment, setComment] = useState([]);
     const [likes, setLikes] = useState([]);
@@ -17,18 +20,21 @@ const SingleQuestionPage = (props) => {
     const [editComment, setEditComment] = useState(true);
     const [editCommentData, setEditCommentData] = useState("")
 
-
-    const token = localStorage.getItem('token');
-    let decoded;
-    if (token) decoded = jwt_decode(token);
+    //variables
     const location = useLocation();
     const id = location.pathname.split("/")[2]
+    const token = localStorage.getItem('token');
+    let decoded;
 
+    if (token) decoded = jwt_decode(token);
 
+    // handle changes
     const handleEditCommentChange = (event) => {
         setEditCommentData(event.target.value);
     };
 
+    // Functions
+    // get all comments and number of likes and dislike for each
     const fetchComments = async () => {
         let commentData = await CommentService.getComments(id)
         commentData = await Promise.all(commentData.map(async (item) => {
@@ -39,17 +45,17 @@ const SingleQuestionPage = (props) => {
         setComment(commentData)
 
     }
-
+    // get number of likes for question
     const fetchLikesForQuestion = async () => {
         const likesData = await LikeService.getNumberOfLikesForQuestion(id)
         setLikes(likesData)
     }
-
+    // get number of dislikes for question
     const fetchDislikeForQuestion = async () => {
         const dislikesData = await LikeService.getNumberOfDislikesForQuestion(id)
         setDislike(dislikesData)
     }
-
+    // add like for question
     const addQuestionLike = async () => {
         if (decoded) {
             const data = {
@@ -60,20 +66,16 @@ const SingleQuestionPage = (props) => {
                 commentId: null
             }
             try {
-
                 await LikeService.addLike(data)
                 await fetchLikesForQuestion()
-
             } catch (error) {
                 console.log(error)
             }
         } else {
             setError("Please login!")
         }
-
-
     }
-
+    //add like for comments
     const addCommentLike = async (commentId) => {
         if (decoded) {
             const data = {
@@ -92,10 +94,8 @@ const SingleQuestionPage = (props) => {
         } else {
             setError("Please login!")
         }
-
-
     }
-
+    //add dislike for question
     const addQuestionDislike = async () => {
         if (decoded) {
             const data = {
@@ -114,9 +114,8 @@ const SingleQuestionPage = (props) => {
         } else {
             setError("Please login!")
         }
-
-
     }
+    //add dislike for comment
     const addCommentDislike = async (commentId) => {
         if (decoded) {
             const data = {
@@ -135,12 +134,10 @@ const SingleQuestionPage = (props) => {
         } else {
             setError("Please login!")
         }
-
     }
-
+    // delete comment
     const deleteComment = async (commentId) => {
         if (decoded) {
-
             try {
                 await CommentService.deleteComment(commentId)
                 await fetchComments()
@@ -151,9 +148,9 @@ const SingleQuestionPage = (props) => {
             setError("Please login!")
         }
     }
+    //edit comment
     const editCommentFunc = async (commentId) => {
         if (decoded) {
-
             try {
                 const data = {
                     comment: editCommentData
@@ -169,51 +166,51 @@ const SingleQuestionPage = (props) => {
         }
     }
 
-    // Get user information
     useEffect(() => {
         (async () => {
+            try {
+                const questionData = await QuestionService.getSingleQuestion(id)
+                setQuestion(questionData)
 
-            const questionData = await QuestionService.getSingleQuestion(id)
-            setQuestion(questionData)
-
-            await fetchLikesForQuestion()
-            await fetchDislikeForQuestion()
-
-            await fetchComments()
-
+                await fetchLikesForQuestion()
+                await fetchDislikeForQuestion()
+                await fetchComments()
+            } catch (e) {
+                console.error(e)
+            }
         })();
-
-
     }, []);
 
     return (
         <>
+            {/* Single question page */}
             <div className="question">
+                {/* Question data */}
                 <h4>
                     Title: {question && question.title}
                 </h4>
                 <h5>
                     Description: {question && question.description}
                 </h5>
-                <p>Created At: {question && question.createdAt}</p>
+                {/* Question like and dislike buttons */}
                 <button className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
                         onClick={addQuestionLike}>Likes: {likes.like}</button>
                 <button className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
                         onClick={addQuestionDislike}>Dislikes: {dislike.like}</button>
-
             </div>
             <div className="comments">
+                {/* Comment data (add comment, list all, comment likes and dislike) */}
                 <p style={{color: "red"}}>{error}</p>
                 <h5>Comment:</h5>
+                {/* If user is login show add comment form */}
                 {decoded ? <AddComment fetchComments={fetchComments}/> :
                     <a href="/login">Please login if you want to leave comment!</a>}
-
                 <div className="comment">
-                    {comment && comment.map((item) => {
 
+                    {comment && comment.map((item) => {
                         return (
                             <div>
-
+                                {/* If editComment is true show comment data else show input for editing comment */}
                                 {editComment ? <h6>{item.comment}</h6> :
                                     <div>
                                         <p>Comment:</p>
@@ -223,20 +220,20 @@ const SingleQuestionPage = (props) => {
                                             id="comment"
                                             name="comment"
                                             onChange={handleEditCommentChange}
-
                                         />
-
+                                        {/* Save changes on comment */}
                                         <button
                                             onClick={async () => {
                                                 await editCommentFunc(item.id)
                                             }}
                                             className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
                                         ><span className="material-icons">
-                                        save
-                                    </span>
+                                            save
+                                            </span>
                                         </button>
                                     </div>}
 
+                                {/* If user is owner of comment show edit and delete buttons */}
                                 {item.userId === decoded.user.id ?
                                     <div>
                                         <button
@@ -259,6 +256,7 @@ const SingleQuestionPage = (props) => {
                                     </span>
                                         </button>
                                     </div> : <p></p>}
+                                {/* Like and dislike for comments */}
                                 <button className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
                                         onClick={async () => {
                                             await addCommentLike(item.id)
@@ -267,7 +265,6 @@ const SingleQuestionPage = (props) => {
                                         onClick={async () => {
                                             await addCommentDislike(item.id)
                                         }}>Dislikes: {item.dislikes}</button>
-
                             </div>
                         )
                     })}

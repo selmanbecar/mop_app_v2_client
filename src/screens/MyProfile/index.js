@@ -1,20 +1,33 @@
 import React, {useEffect, useState} from "react"
-import jwt_decode from "jwt-decode";
 import {useNavigate} from "react-router-dom";
-import QuestionList from "../../components/QuestionList";
-import QuestionService from "../../Services/QuestionService";
-import UserService from "../../Services/UserService";
 import {useLocation} from "react-router";
+import jwt_decode from "jwt-decode";
+
+import UserService from "../../Services/UserService";
 import Validator from "../../Helpers/Validation/Validations";
 
 const MyProfile = () => {
-    let navigate = useNavigate()
+
+    // states
     const [user, setUser] = useState({});
     const [password, setPassword] = useState("");
     const [error, setError] = useState({})
-
     const [edit, setEdit] = useState(true)
 
+    // variables
+    let navigate = useNavigate()
+    const location = useLocation();
+    const id = location.pathname.split("/")[2]
+    const token = localStorage.getItem('token');
+    let decoded;
+
+    try {
+        if (token) decoded = jwt_decode(token);
+    } catch (e) {
+        console.error(e)
+    }
+
+    // handle changes
     const handlePasswordChange = (event) => {
         if (!Validator.passwordValidate(event.target.value)) {
             setError({
@@ -29,24 +42,16 @@ const MyProfile = () => {
         }
         setPassword(event.target.value);
     };
+
     const handleFirstNameChange = (event) => {
         setUser({...user, first_name: event.target.value});
     };
+
     const handleLastNameChange = (event) => {
         setUser({...user, last_name: event.target.value});
     };
 
-
-    const token = localStorage.getItem('token');
-    let decoded;
-    try {
-        if (token) decoded = jwt_decode(token);
-    } catch (e) {
-        console.error(e)
-    }
-    const location = useLocation();
-    const id = location.pathname.split("/")[2]
-
+    // get User by id
     const fetchUser = async () => {
         try {
             const userData = await UserService.getSingleUser(id)
@@ -56,7 +61,7 @@ const MyProfile = () => {
         }
 
     }
-
+    // edit user
     const editUser = async () => {
         try {
             const data = {
@@ -69,13 +74,12 @@ const MyProfile = () => {
         } catch (e) {
             console.error(e)
         }
-
     }
+    // edit password
     const editPassword = async () => {
         try {
             const data = {
                 password: password
-
             }
             await UserService.editUser(id, data)
             await fetchUser()
@@ -83,11 +87,8 @@ const MyProfile = () => {
         } catch (e) {
             console.error(e)
         }
-
     }
 
-
-    // Get user information
     useEffect(() => {
         (async () => {
             if (!decoded) {
@@ -100,22 +101,22 @@ const MyProfile = () => {
 
     return (
         <>
+            {/* My profile */}
             <div>
-
                 <div className="home-nav">
                     <h3>My profile</h3>
+                    {/* On click change edit state */}
                     <button className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
                             onClick={async () => {
                                 setEdit(!edit)
                             }}>Edit
                     </button>
-
                 </div>
+                {/* If edit is true show data but if edit false show fields for edit */}
                 {edit ? <div>
                         <h4>First name: {user.first_name}</h4>
                         <h4>Last name: {user.last_name}</h4>
                         <h4>Email: {user.email}</h4>
-
                     </div>
                     :
                     <div>
@@ -142,6 +143,7 @@ const MyProfile = () => {
                                 onClick={editUser}>Save
                         </button>
                     </div>}
+                {/* Change password form */}
                 <h4>Change password:</h4>
                 <p>Password:</p>
                 <input
@@ -151,20 +153,18 @@ const MyProfile = () => {
                     name="password"
                     value={password}
                     onChange={handlePasswordChange}
-
                 />
                 <button className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
                         disabled={
                             error.password ||
                             password === ''
                         }
-                        onClick={editPassword}>Save new password
+                        onClick={editPassword}>
+                    Save new password
                 </button>
+                {/* Errors */}
                 <p style={{color: "red"}}>{error.password}</p>
-
             </div>
-
-
         </>
     )
 }

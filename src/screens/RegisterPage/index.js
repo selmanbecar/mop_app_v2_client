@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
+
 import AuthService from '../../Services/AuthService';
 import Validator from '../../Helpers/Validation/Validations';
 
-
 export const Form = () => {
-    let navigate = useNavigate()
+
+    // states
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [first_name, setFirstName] = useState('');
@@ -13,8 +14,10 @@ export const Form = () => {
     const [confirmedPassword, setConfirmedPassword] = useState('');
     const [error, setError] = useState({});
 
+    // variables
+    let navigate = useNavigate()
 
-    //handle changes
+    // handle changes
     const handleFirstNameChange = (event) => {
         setFirstName(event.target.value);
     };
@@ -53,7 +56,6 @@ export const Form = () => {
         setPassword(event.target.value);
     };
 
-
     const handleConfirmedPasswordChange = (event) => {
         if (!Validator.passwordValidate(event.target.value)) {
             setError({
@@ -73,7 +75,7 @@ export const Form = () => {
         }
         setConfirmedPassword(event.target.value);
     };
-
+    //Register new user function
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -83,7 +85,6 @@ export const Form = () => {
             email,
             password,
         };
-
         await AuthService.register(body)
             .then(() => {
                 navigate("/", {replace: true});
@@ -96,13 +97,13 @@ export const Form = () => {
         (async () => {
             if (await AuthService.verify(localStorage.getItem('token')))
                 navigate("/", {replace: true});
-
             else localStorage.removeItem('token');
         })();
     },);
 
     return (
         <form>
+            {/* Form for registration */}
             <div>
                 <div/>
                 <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -229,6 +230,5 @@ const RegisterPage = () => {
         </>
     );
 };
-
 
 export default RegisterPage;

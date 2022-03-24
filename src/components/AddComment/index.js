@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react"
-import jwt_decode from 'jwt-decode';
 import {useLocation} from "react-router";
+import jwt_decode from 'jwt-decode';
+
 import CommentService from "../../Services/CommentService";
-import {useNavigate} from "react-router-dom";
+
 
 const AddComment = ({fetchComments}) => {
 
-    let navigate = useNavigate()
     //states
     const [comment, setComment] = useState("");
     const [error, setError] = useState("");
@@ -17,19 +17,15 @@ const AddComment = ({fetchComments}) => {
         setComment(event.target.value);
     };
 
+    //variables
     const location = useLocation();
     const questionId = location.pathname.split("/")[2]
-
     const token = localStorage.getItem('token');
     let decoded;
+
     if (token) decoded = jwt_decode(token);
 
-    useEffect(() => {
-        
-    },);
-
-
-    //add function for adding new health record
+    //add function for adding new Comment record
     const addComment = async (event) => {
         event.preventDefault();
 
@@ -47,12 +43,11 @@ const AddComment = ({fetchComments}) => {
         } else {
             setError("Please enter your comment!")
         }
-
     };
-
 
     return (
         <div>
+            {/* Add new comment form */}
             <h6>Add new Comment</h6>
             <form>
                 <div>
@@ -62,7 +57,6 @@ const AddComment = ({fetchComments}) => {
                         <input
                             className="mdl-textfield__input"
                             type="text"
-                            required
                             id="comment"
                             name="comment"
                             value={comment}
