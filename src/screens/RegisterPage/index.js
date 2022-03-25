@@ -99,7 +99,7 @@ export const Form = () => {
                 navigate("/", {replace: true});
             else localStorage.removeItem('token');
         })();
-    },);
+    }, []);
 
     return (
         <form>

@@ -204,7 +204,7 @@ const SingleQuestionPage = () => {
                 <hr className="divider"/>
                 {/* Comment data (add comment, list all, comment likes and dislike) */}
                 <p style={{color: "red"}}>{error}</p>
-             
+
                 {/* If user is login show add comment form */}
                 {decoded ? <AddComment fetchComments={fetchComments}/> :
                     <a href="/login">Please login if you want to leave comment!</a>}
@@ -229,16 +229,7 @@ const SingleQuestionPage = () => {
                                                 name="comment"
                                                 onChange={handleEditCommentChange}
                                             />
-                                            {/* Save changes on comment */}
-                                            <button
-                                                onClick={async () => {
-                                                    await editCommentFunc(item.id)
-                                                }}
-                                                className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
-                                            ><span className="material-icons">
-                                            save
-                                            </span>
-                                            </button>
+
                                         </div>}
                                     {/* Like and dislike for comments */}
                                     <div className="likes-dislikes">
@@ -254,7 +245,7 @@ const SingleQuestionPage = () => {
                       }}>thumb_down </span><p> {item.dislikes}</p></span></div>
                                 </div>
                                 {/* If user is owner of comment show edit and delete buttons */}
-                                {item.userId === decoded.user.id ?
+                                {item.userId === decoded?.user.id ?
                                     <div className="comment-actions">
                                         <span className="material-icons delete" onClick={async () => {
                                             await deleteComment(item.id)
@@ -267,6 +258,13 @@ const SingleQuestionPage = () => {
                                         >
                                         edit
                                     </span>
+                                        {/* Save changes on comment */}
+                                        {!editComment ? <span onClick={async () => {
+                                                await editCommentFunc(item.id)
+                                            }} className="material-icons">
+                                            save
+                                            </span>
+                                            : <p></p>}
 
                                     </div> : <p></p>}
 

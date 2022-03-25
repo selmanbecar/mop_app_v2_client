@@ -62,17 +62,11 @@ const HomePage = () => {
         <>
             <div>
                 {/* Home page */}
-                {notifications ?
-                    <div style={{width: "200px", height: "50px", backgroundColor: "green"}}><p>Someone comment on your
-                        question!</p>
-                        <button onClick={deleteNotification}>x</button>
-                    </div> :
-                    <p></p>}
                 <div className="home-nav">
                     <h3>QUESTIONNAIRE</h3>
                     {/* If user is login show logout, add new question, my question */}
                     {decoded ?
-                        <div>
+                        <div className="logout-add-notification">
                             {/* Logout */}
                             <button className="mdl-button mdl-js-button mdl-button--primary" style={{height: "50px"}}
                                     onClick={() => {
@@ -93,6 +87,20 @@ const HomePage = () => {
                                         navigate("/myquestion", {replace: true});
                                     }}>My questions
                             </button>
+                            {notifications ?
+                                <div style={{
+                                    width: "200px",
+                                    height: "50px",
+                                    backgroundColor: "#e7e7e7",
+                                    borderRadius: "20px 20px 20px 0px",
+                                    padding: "2px",
+                                    margin: "5px"
+                                }}><p>Someone
+                                    comment on your
+                                    question!</p>
+                                    <button onClick={deleteNotification}>x</button>
+                                </div> :
+                                <p></p>}
                         </div>
 
                         :

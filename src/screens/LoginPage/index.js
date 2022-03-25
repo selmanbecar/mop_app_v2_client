@@ -79,7 +79,7 @@ const LoginPage = () => {
                 navigate("/", {replace: true});
             } else localStorage.removeItem('token');
         })();
-    },);
+    }, []);
 
     return (
         <>
