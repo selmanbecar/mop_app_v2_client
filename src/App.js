@@ -8,7 +8,7 @@ import AddQuestion from "./components/AddQuestion";
 import MyQuestionPage from "./screens/MyQuestionsPage";
 import MyProfile from "./screens/MyProfile";
 
-// stilizacija ,notifications
+
 
 const App = () => {
     return (
