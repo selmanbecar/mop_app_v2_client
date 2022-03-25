@@ -95,10 +95,15 @@ const HomePage = () => {
                                     borderRadius: "20px 20px 20px 0px",
                                     padding: "2px",
                                     margin: "5px"
-                                }}><p>Someone
-                                    comment on your
-                                    question!</p>
-                                    <button onClick={deleteNotification}>x</button>
+                                }}>
+                                    <p>Someone
+                                        comment on your
+                                        question!
+                                        <span className="material-icons delete" onClick={deleteNotification}>
+                                        delete
+                                    </span>
+                                    </p>
+
                                 </div> :
                                 <p></p>}
                         </div>
