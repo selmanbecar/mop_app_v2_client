@@ -182,7 +182,7 @@ const SingleQuestionPage = () => {
     }, []);
 
     return (
-        <>
+        <div className="question-wrapper">
             {/* Single question page */}
             <div className="question">
                 {/* Question data */}
@@ -192,86 +192,92 @@ const SingleQuestionPage = () => {
                 <h5>
                     Description: {question && question.description}
                 </h5>
+
                 {/* Question like and dislike buttons */}
-                <button className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
-                        onClick={addQuestionLike}>Likes: {likes.like}</button>
-                <button className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
-                        onClick={addQuestionDislike}>Dislikes: {dislike.like}</button>
-            </div>
-            <div className="comments">
+                <div className="likes-dislikes">
+                <span className="likes">
+                <span className="material-icons like"
+                      onClick={addQuestionLike}>thumb_up </span><p> {likes.like}</p></span>
+                    <span className="likes">
+                <span className="material-icons dislike"
+                      onClick={addQuestionDislike}>thumb_down </span><p> {dislike.like}</p></span></div>
+                <hr className="divider"/>
                 {/* Comment data (add comment, list all, comment likes and dislike) */}
                 <p style={{color: "red"}}>{error}</p>
-                <h5>Comment:</h5>
+             
                 {/* If user is login show add comment form */}
                 {decoded ? <AddComment fetchComments={fetchComments}/> :
                     <a href="/login">Please login if you want to leave comment!</a>}
+            </div>
+
+            <div className="comments">
+
                 <div className="comment">
 
                     {comment && comment.map((item) => {
                         return (
-                            <div>
+                            <div className="user-comment">
                                 {/* If editComment is true show comment data else show input for editing comment */}
-                                {editComment ? <h6>{item.comment}</h6> :
-                                    <div>
-                                        <p>Comment:</p>
-                                        <input
-                                            className="mdl-textfield__input"
-                                            type="text"
-                                            id="comment"
-                                            name="comment"
-                                            onChange={handleEditCommentChange}
-                                        />
-                                        {/* Save changes on comment */}
-                                        <button
-                                            onClick={async () => {
-                                                await editCommentFunc(item.id)
-                                            }}
-                                            className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
-                                        ><span className="material-icons">
+                                <div>
+                                    {editComment ? <h6 className="comment-text">{item.comment}</h6> :
+                                        <div>
+                                            <p>Comment:</p>
+                                            <input
+                                                className="mdl-textfield__input"
+                                                type="text"
+                                                id="comment"
+                                                name="comment"
+                                                onChange={handleEditCommentChange}
+                                            />
+                                            {/* Save changes on comment */}
+                                            <button
+                                                onClick={async () => {
+                                                    await editCommentFunc(item.id)
+                                                }}
+                                                className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
+                                            ><span className="material-icons">
                                             save
                                             </span>
-                                        </button>
-                                    </div>}
-
+                                            </button>
+                                        </div>}
+                                    {/* Like and dislike for comments */}
+                                    <div className="likes-dislikes">
+                <span className="likes">
+                <span className="material-icons like"
+                      onClick={async () => {
+                          await addCommentLike(item.id)
+                      }}>thumb_up </span><p> {item.likes}</p></span>
+                                        <span className="likes">
+                <span className="material-icons dislike"
+                      onClick={async () => {
+                          await addCommentDislike(item.id)
+                      }}>thumb_down </span><p> {item.dislikes}</p></span></div>
+                                </div>
                                 {/* If user is owner of comment show edit and delete buttons */}
                                 {item.userId === decoded.user.id ?
-                                    <div>
-                                        <button
-                                            onClick={async () => {
-                                                await deleteComment(item.id)
-                                            }}
-                                            className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
-                                        ><span className="material-icons">
+                                    <div className="comment-actions">
+                                        <span className="material-icons delete" onClick={async () => {
+                                            await deleteComment(item.id)
+                                        }}>
                                         delete
                                     </span>
-                                        </button>
-                                        <button
-                                            onClick={async () => {
-                                                await setEditComment(!editComment)
-                                            }}
-
-                                            className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
-                                        ><span className="material-icons">
+                                        <span className="material-icons edit" onClick={async () => {
+                                            await setEditComment(!editComment)
+                                        }}
+                                        >
                                         edit
                                     </span>
-                                        </button>
+
                                     </div> : <p></p>}
-                                {/* Like and dislike for comments */}
-                                <button className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
-                                        onClick={async () => {
-                                            await addCommentLike(item.id)
-                                        }}>Likes: {item.likes}</button>
-                                <button className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
-                                        onClick={async () => {
-                                            await addCommentDislike(item.id)
-                                        }}>Dislikes: {item.dislikes}</button>
+
                             </div>
+
                         )
                     })}
                 </div>
 
             </div>
-        </>
+        </div>
     )
 }
 

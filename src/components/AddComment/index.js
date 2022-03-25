@@ -48,12 +48,11 @@ const AddComment = ({fetchComments}) => {
     return (
         <div>
             {/* Add new comment form */}
-            <h6>Add new Comment</h6>
             <form>
                 <div>
                     <div/>
                     <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <p>Comment</p>
+                        <p>Add a Comment</p>
                         <input
                             className="mdl-textfield__input"
                             type="text"

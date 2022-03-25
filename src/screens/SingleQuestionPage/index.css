@@ -1,5 +1,62 @@
+.question-wrapper {
+    margin: 0 10vw;
+}
+
+.question {
+    padding: 20px 0;
+}
+
+.likes-dislikes {
+    display: flex;
+    margin-top: 40px;
+
+}
+
+.divider {
+    border-top: 1px solid #e7e7e7;
+    color: #ffffff;
+}
+
+.likes {
+    display: flex;
+    padding: 0 10px;
+}
+
+.material-icons {
+    color: #c7c7c7;
+    cursor: pointer;
+}
+
+.likes .material-icons {
+    padding-right: 10px;
+}
+
+.like:hover, .edit:hover {
+    color: blue;
+
+}
+
+.dislike:hover, .delete:hover {
+    color: red;
+}
+
 .comments {
-    border: 1px solid black;
-    margin: 5px;
-    padding: 5px;
+    border: 1px solid rgba(210, 210, 217, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 0 40px rgba(210, 210, 217, 0.1);
+    padding: 20px 40px;
+}
+
+.user-comment {
+    display: flex;
+    padding: 16px 0;
+}
+
+.comment-text {
+    min-width: 400px;
+    margin-top: 0;
+}
+
+.comment-actions span {
+    padding: 0 8px;
 }

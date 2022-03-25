@@ -8,12 +8,15 @@ import TopQuestion from "../../components/TopQuestion";
 import UserService from "../../Services/UserService";
 import QuestionService from "../../Services/QuestionService";
 import "./index.css"
+import NotificationService from "../../Services/NotificationService";
+import notificationService from "../../Services/NotificationService";
 
 const HomePage = () => {
 
     // states
     const [user, setUser] = useState({});
     const [questions, setQuestions] = useState([]);
+    const [notifications, setNotifications] = useState({});
 
     // variables
     let navigate = useNavigate()
@@ -32,6 +35,15 @@ const HomePage = () => {
         setQuestions(questionData)
     }
 
+    const fetchNotification = async () => {
+        const notificationData = await NotificationService.getNotification(decoded?.user.id)
+        setNotifications(notificationData)
+    }
+    const deleteNotification = async () => {
+        await notificationService.deleteNotifications(notifications.userId)
+        await fetchNotification()
+    }
+
     // Get user information
     useEffect(() => {
         (async () => {
@@ -39,6 +51,7 @@ const HomePage = () => {
             if (decoded) {
                 const userData = await UserService.getSingleUser(decoded?.user.id)
                 setUser(userData)
+                await fetchNotification()
             } else {
                 setUser({email: "Unknown"})
             }
@@ -49,6 +62,12 @@ const HomePage = () => {
         <>
             <div>
                 {/* Home page */}
+                {notifications ?
+                    <div style={{width: "200px", height: "50px", backgroundColor: "green"}}><p>Someone comment on your
+                        question!</p>
+                        <button onClick={deleteNotification}>x</button>
+                    </div> :
+                    <p></p>}
                 <div className="home-nav">
                     <h3>QUESTIONNAIRE</h3>
                     {/* If user is login show logout, add new question, my question */}
@@ -89,9 +108,10 @@ const HomePage = () => {
                 </div>
                 {/* Show top questions, top users and List of questions*/}
                 <div className="comp-wrapper">
-                    <TopQuestion/>
-                    <TopUsers/>
                     <QuestionList fetchQuestions={fetchQuestions} questions={questions}/>
+                    <div style={{}}>
+                        <TopQuestion/>
+                        <TopUsers/></div>
                 </div>
             </div>
         </>

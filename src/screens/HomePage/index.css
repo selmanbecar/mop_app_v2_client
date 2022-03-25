@@ -1,22 +1,33 @@
 .comp-wrapper {
-    height: 100%;
-    width: 100%;
+
     display: flex;
     flex-direction: row;
+    justify-content: space-evenly;
+    width: 100vw;
 
 }
 
-.comp-wrapper-element {
+/*.comp-wrapper-element {
     margin-left: 450px;
     width: 30%;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
     border-radius: 5px;
+}*/
+body {
+    margin: 0;
+    overflow-x: hidden;
 }
 
-.comp-wrapper-element:hover {
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+.comp-wrapper-element {
+    border: 1px solid rgba(210, 210, 217, 0.2);
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 0 40px rgba(210, 210, 217, 0.1);
+    padding: 20px 40px;
+
 }
+
 
 .home-nav {
     display: flex;

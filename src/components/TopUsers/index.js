@@ -19,9 +19,9 @@ const TopQuestion = () => {
             }
         })();
     }, []);
-    
+
     return (
-        <div className="comp-wrapper-element" style={{marginLeft: "20px"}}>
+        <div className="comp-wrapper-element">
             {/* Get top users */}
             <h5>Top 5 Users: </h5>
 
