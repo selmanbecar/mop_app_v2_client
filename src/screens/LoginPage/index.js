@@ -1,12 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 
-import AuthService from '../../Services/AuthService';
 import Validator from '../../Helpers/Validation/Validations';
 import "./index.css"
 
+import {connect,} from "react-redux";
+import PropTypes from "prop-types";
+import {login} from "../../actions/auth";
+import AuthService from "../../Services/AuthService";
 
-const LoginPage = () => {
+
+const LoginPage = ({login, isAuthenticated}) => {
 
     // states
     const [email, setEmail] = useState('');
@@ -51,25 +55,9 @@ const LoginPage = () => {
     // Login function
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (email === '')
-            setError({
-                email: 'Please enter your email!',
-            });
-        if (password === '')
-            setError({
-                password: 'Please enter your password!',
-            });
 
-        AuthService.login({
-            email,
-            password,
-        })
-            .then(() => {
-                navigate("/", {replace: true});
-            })
-            .catch(() => {
-                setLoginError("Email or password are incorrect!")
-            });
+        login(email, password);
+        navigate("/")
     };
 
     useEffect(() => {
@@ -80,6 +68,7 @@ const LoginPage = () => {
             } else localStorage.removeItem('token');
         })();
     }, []);
+
 
     return (
         <>
@@ -152,4 +141,12 @@ const LoginPage = () => {
     );
 };
 
-export default LoginPage;
+LoginPage.propTypes = {
+    login: PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool,
+};
+const mapStateToProps = (state) => ({
+    isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps, {login})(LoginPage);

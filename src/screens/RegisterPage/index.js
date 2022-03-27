@@ -3,8 +3,11 @@ import {Link, useNavigate} from 'react-router-dom';
 
 import AuthService from '../../Services/AuthService';
 import Validator from '../../Helpers/Validation/Validations';
+import PropTypes from "prop-types";
+import {connect, useSelector} from "react-redux";
+import {register} from "../../actions/auth";
 
-export const Form = () => {
+export const RegisterPage = ({register, isAuthenticated}) => {
 
     // states
     const [email, setEmail] = useState('');
@@ -13,6 +16,8 @@ export const Form = () => {
     const [last_name, setLastName] = useState('');
     const [confirmedPassword, setConfirmedPassword] = useState('');
     const [error, setError] = useState({});
+
+    console.log(isAuthenticated)
 
     // variables
     let navigate = useNavigate()
@@ -79,18 +84,8 @@ export const Form = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        let body = {
-            first_name,
-            last_name,
-            email,
-            password,
-        };
-        await AuthService.register(body)
-            .then(() => {
-                navigate("/", {replace: true});
-            })
-            .catch(() => {
-            });
+        register(first_name, last_name, email, password);
+        navigate("/")
     };
 
     useEffect(() => {
@@ -99,109 +94,9 @@ export const Form = () => {
                 navigate("/", {replace: true});
             else localStorage.removeItem('token');
         })();
-    }, []);
+    }, [7]);
 
-    return (
-        <form>
-            {/* Form for registration */}
-            <div>
-                <div/>
-                <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <p>First name: </p>
-                    <input
-                        className="mdl-textfield__input"
-                        type="text"
-                        id="first_name"
-                        name="first_name"
-                        value={first_name}
-                        onChange={handleFirstNameChange}
-                        autoComplete="first_name"
-                    />
-                </div>
-                <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <p>Last name: </p>
-                    <input
-                        className="mdl-textfield__input"
-                        type="text"
-                        id="last_name"
-                        name="last_name"
-                        value={last_name}
-                        onChange={handleLastNameChange}
-                        autoComplete="last_name"
-                    />
-                </div>
-                <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <p>Email: </p>
-                    <input
-                        className="mdl-textfield__input"
-                        type="text"
-                        required
-                        id="email"
-                        name="email"
-                        value={email}
-                        onChange={handleEmailChange}
-                        autoComplete="email"
-                    />
-                </div>
 
-                <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <p>Password: </p>
-
-                    <input
-                        className="mdl-textfield__input"
-                        type="password"
-                        required
-                        id="password"
-                        name="password"
-                        value={password}
-                        onChange={handlePasswordChange}
-                        autoComplete="password"
-                    />
-                </div>
-                <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <p>Confirm Password: </p>
-
-                    <input
-                        className="mdl-textfield__input"
-                        type="password"
-                        color="secondary"
-                        required
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        autoComplete="password"
-                        value={confirmedPassword}
-                        onChange={handleConfirmedPasswordChange}
-                    />
-                </div>
-                <button
-                    className="mdl-button mdl-js-button mdl-button--primary"
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleSubmit}
-                    disabled={
-                        error.email ||
-                        error.password ||
-                        error.confirmedPassword ||
-                        email === '' ||
-                        password === '' ||
-                        confirmedPassword === ''
-                    }
-                >
-                    REGISTER
-                </button>
-                <p style={{color: "red"}}>{error.email}</p>
-                <p style={{color: "red"}}>{error.password}</p>
-                <p style={{color: "red"}}>{error.confirmedPassword}</p>
-
-            </div>
-
-        </form>
-    );
-};
-
-const RegisterPage = () => {
     return (
         <>
             <div>
@@ -210,7 +105,102 @@ const RegisterPage = () => {
                     <h5>
                         Sign up
                     </h5>
-                    <Form/>
+                    <form>
+                        {/* Form for registration */}
+                        <div>
+                            <div/>
+                            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <p>First name: </p>
+                                <input
+                                    className="mdl-textfield__input"
+                                    type="text"
+                                    id="first_name"
+                                    name="first_name"
+                                    value={first_name}
+                                    onChange={handleFirstNameChange}
+                                    autoComplete="first_name"
+                                />
+                            </div>
+                            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <p>Last name: </p>
+                                <input
+                                    className="mdl-textfield__input"
+                                    type="text"
+                                    id="last_name"
+                                    name="last_name"
+                                    value={last_name}
+                                    onChange={handleLastNameChange}
+                                    autoComplete="last_name"
+                                />
+                            </div>
+                            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <p>Email: </p>
+                                <input
+                                    className="mdl-textfield__input"
+                                    type="text"
+                                    required
+                                    id="email"
+                                    name="email"
+                                    value={email}
+                                    onChange={handleEmailChange}
+                                    autoComplete="email"
+                                />
+                            </div>
+
+                            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <p>Password: </p>
+
+                                <input
+                                    className="mdl-textfield__input"
+                                    type="password"
+                                    required
+                                    id="password"
+                                    name="password"
+                                    value={password}
+                                    onChange={handlePasswordChange}
+                                    autoComplete="password"
+                                />
+                            </div>
+                            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <p>Confirm Password: </p>
+
+                                <input
+                                    className="mdl-textfield__input"
+                                    type="password"
+                                    color="secondary"
+                                    required
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    autoComplete="password"
+                                    value={confirmedPassword}
+                                    onChange={handleConfirmedPasswordChange}
+                                />
+                            </div>
+                            <button
+                                className="mdl-button mdl-js-button mdl-button--primary"
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="secondary"
+                                onClick={handleSubmit}
+                                disabled={
+                                    error.email ||
+                                    error.password ||
+                                    error.confirmedPassword ||
+                                    email === '' ||
+                                    password === '' ||
+                                    confirmedPassword === ''
+                                }
+                            >
+                                REGISTER
+                            </button>
+                            <p style={{color: "red"}}>{error.email}</p>
+                            <p style={{color: "red"}}>{error.password}</p>
+                            <p style={{color: "red"}}>{error.confirmedPassword}</p>
+
+                        </div>
+
+                    </form>
                     <div>
                         <div>
                             <Link
@@ -231,4 +221,14 @@ const RegisterPage = () => {
     );
 };
 
-export default RegisterPage;
+RegisterPage.propTypes = {
+    register: PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool,
+};
+
+
+const mapStateToProps = (state) => ({
+    isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps, {register})(RegisterPage);

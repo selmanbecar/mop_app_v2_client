@@ -7,22 +7,26 @@ import SingleQuestionPage from "./screens/SingleQuestionPage";
 import AddQuestion from "./components/AddQuestion";
 import MyQuestionPage from "./screens/MyQuestionsPage";
 import MyProfile from "./screens/MyProfile";
+import {Provider} from "react-redux";
+import store from "./store";
 
 // stilizacija ,notifications
 
 const App = () => {
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<HomePage/>}/>
-                <Route path="/register" element={<RegisterPage/>}/>
-                <Route path="/login" element={<LoginPage/>}/>
-                <Route path="/question/:id" element={<SingleQuestionPage/>}/>
-                <Route path="/question/add" element={<AddQuestion/>}/>
-                <Route path="/myquestion" element={<MyQuestionPage/>}/>
-                <Route path="/myprofile/:id" element={<MyProfile/>}/>
-            </Routes>
-        </BrowserRouter>
+        <Provider store={store}>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<HomePage/>}/>
+                    <Route path="/register" element={<RegisterPage/>}/>
+                    <Route path="/login" element={<LoginPage/>}/>
+                    <Route path="/question/:id" element={<SingleQuestionPage/>}/>
+                    <Route path="/question/add" element={<AddQuestion/>}/>
+                    <Route path="/myquestion" element={<MyQuestionPage/>}/>
+                    <Route path="/myprofile/:id" element={<MyProfile/>}/>
+                </Routes>
+            </BrowserRouter>
+        </Provider>
     );
 };
 

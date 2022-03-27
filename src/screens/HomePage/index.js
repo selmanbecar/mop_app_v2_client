@@ -10,8 +10,11 @@ import QuestionService from "../../Services/QuestionService";
 import "./index.css"
 import NotificationService from "../../Services/NotificationService";
 import notificationService from "../../Services/NotificationService";
+import PropTypes from "prop-types";
+import {connect} from "react-redux";
+import {logout} from "../../actions/auth";
 
-const HomePage = () => {
+const HomePage = ({isAuthenticated, logout}) => {
 
     // states
     const [user, setUser] = useState({});
@@ -70,8 +73,8 @@ const HomePage = () => {
                             {/* Logout */}
                             <button className="mdl-button mdl-js-button mdl-button--primary" style={{height: "50px"}}
                                     onClick={() => {
-                                        localStorage.removeItem("token")
-                                        navigate("/login", {replace: true});
+                                        logout()
+                                        navigate("/login")
 
                                     }}>Logout
                             </button>
@@ -131,4 +134,12 @@ const HomePage = () => {
     )
 }
 
-export default HomePage
+HomePage.propTypes = {
+    logout: PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool,
+};
+const mapStateToProps = (state) => ({
+    isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps, {logout})(HomePage);

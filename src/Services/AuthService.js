@@ -18,6 +18,7 @@ class AuthService {
             })
             .then((res) => {
                 localStorage.setItem("token", res.token);
+                return res
             });
     }
 
